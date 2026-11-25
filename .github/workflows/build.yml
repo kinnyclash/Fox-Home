@@ -1,0 +1,28 @@
+name: Build Fox Home
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download the CE C toolchain
+        run: |
+          curl -L -o cedev.tar.gz https://github.com/CE-Programming/toolchain/releases/latest/download/CEdev-Linux.tar.gz
+          tar -xzf cedev.tar.gz -C "$HOME"
+          echo "$HOME/CEdev/bin" >> "$GITHUB_PATH"
+
+      - name: Build
+        run: make
+
+      - name: Save the calculator files
+        uses: actions/upload-artifact@v4
+        with:
+          name: FoxHome-calculator-files
+          path: |
+            bin/FOXHOME.8xp
+            FOXBG.8xv
